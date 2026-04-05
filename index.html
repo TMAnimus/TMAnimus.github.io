@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travis McCord · Senior Systems Engineer</title>
+  <meta name="description" content="Senior C/C++ Systems Engineer specializing in legacy modernization, HIPAA-compliant systems, and production reliability.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@300;400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0c0d0f;
+      --surface:   #13141a;
+      --border:    #222429;
+      --muted:     #4a4d56;
+      --text:      #ddd9d0;
+      --text-dim:  #8a8680;
+      --accent:    #c8922a;
+      --accent-lo: rgba(200, 146, 42, 0.10);
+      --serif:     'Cormorant Garamond', Georgia, serif;
+      --mono:      'JetBrains Mono', 'Courier New', monospace;
+      --sans:      'Jost', system-ui, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    nav.scrolled {
+      background: rgba(12, 13, 15, 0.92);
+      backdrop-filter: blur(12px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-links {
+      display: flex; gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.73rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Sections ── */
+    section { position: relative; z-index: 1; }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 8rem 3rem 5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.6rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.1s forwards;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(3.5rem, 7vw, 6.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 1.8rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.25s forwards;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-tagline {
+      font-family: var(--serif);
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      font-weight: 300;
+      color: var(--text-dim);
+      max-width: 580px;
+      line-height: 1.6;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-links {
+      display: flex; gap: 1.4rem; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.55s forwards;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn:hover { background: var(--accent); color: var(--bg); }
+    .btn-ghost {
+      border-color: var(--border);
+      color: var(--text-dim);
+    }
+    .btn-ghost:hover { background: var(--surface); color: var(--text); }
+
+    /* ── Divider line ── */
+    .section-rule {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ── Content sections ── */
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 3rem;
+    }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 3.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    h2 {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      line-height: 1.2;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── About ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--text-dim);
+      margin-bottom: 1.2rem;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .stat-list {
+      display: flex; flex-direction: column; gap: 1.2rem;
+    }
+    .stat-item {
+      display: flex; flex-direction: column;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-bottom: none; }
+    .stat-number {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      font-weight: 300;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0;
+      border: 1px solid var(--border);
+    }
+    .skill-group {
+      padding: 2rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .skill-group:last-child { border-right: none; }
+    .skill-group-title {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.2rem;
+    }
+    .skill-items {
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .skill-item {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      display: flex; align-items: center; gap: 0.6rem;
+    }
+    .skill-item::before {
+      content: '';
+      width: 3px; height: 3px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+    .skill-expert { color: var(--text); }
+
+    /* ── Projects ── */
+    .projects-list {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .project-card {
+      display: grid;
+      grid-template-columns: 4rem 1fr;
+      gap: 0 2.5rem;
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .project-card:first-child { border-top: 1px solid var(--border); }
+    .project-index {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      padding-top: 0.4rem;
+      letter-spacing: 0.1em;
+    }
+    .project-body {}
+    .project-tags {
+      display: flex; flex-wrap: wrap; gap: 0.4rem;
+      margin-bottom: 0.8rem;
+    }
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      background: var(--accent-lo);
+      color: var(--accent);
+      border: 1px solid rgba(200, 146, 42, 0.2);
+    }
+    .project-title {
+      font-family: var(--serif);
+      font-weight: 300;
+      font-size: 1.55rem;
+      color: var(--text);
+      margin-bottom: 0.8rem;
+      line-height: 1.25;
+    }
+    .project-desc {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      max-width: 680px;
+      margin-bottom: 1.2rem;
+    }
+    .project-metric {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+    }
+    .project-link {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: color 0.2s;
+    }
+    .project-link:hover { color: var(--accent); }
+    .project-link svg { width: 12px; height: 12px; }
+
+    /* ── Contact ── */
+    #contact { background: var(--surface); }
+    .contact-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .contact-cta h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+    }
+    .contact-cta p {
+      color: var(--text-dim);
+      margin: 1.2rem 0 2rem;
+    }
+    .contact-links {
+      display: flex; flex-direction: column; gap: 1.2rem;
+    }
+    .contact-link {
+      display: flex; align-items: center; gap: 1.2rem;
+      text-decoration: none;
+      padding: 1.2rem 1.5rem;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-link:hover {
+      border-color: var(--accent);
+      background: var(--accent-lo);
+    }
+    .contact-link-icon {
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .contact-link-icon svg { width: 18px; height: 18px; fill: var(--accent); }
+    .contact-link-meta {}
+    .contact-link-label {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.15rem;
+    }
+    .contact-link-value {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      #hero { padding: 7rem 1.5rem 4rem; }
+      .section-inner { padding: 4rem 1.5rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .project-card { grid-template-columns: 1fr; gap: 0; }
+      .project-index { display: none; }
+      .contact-inner { grid-template-columns: 1fr; gap: 3rem; padding: 4rem 1.5rem; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav id="nav">
+    <a class="nav-logo" href="#hero">TM://</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section id="hero">
+    <p class="hero-eyebrow">Senior C/C++ Systems Engineer · Nevada (Remote)</p>
+    <h1>Travis<br><em>McCord</em></h1>
+    <p class="hero-tagline">
+      I make legacy C systems safe to change — eliminating security vulnerabilities,
+      modernizing critical codebases, and shipping zero behavioral regressions in production.
+    </p>
+    <div class="hero-links">
+      <a class="btn" href="#projects">View Projects</a>
+      <a class="btn btn-ghost" href="https://github.com/TMAnimus" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-ghost" href="https://linkedin.com/in/travis-mccord" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── About ── -->
+  <section id="about">
+    <div class="section-inner">
+      <p class="section-label reveal">About</p>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <h2>Precision where<br><em>it matters most</em></h2>
+          <p>
+            I specialize in the work most engineers avoid: production C systems carrying years of
+            accumulated behavior, where a single regression can break compliance or bring down
+            operations. My discipline is modernizing these systems safely — hardening them against
+            security vulnerabilities, improving maintainability, and building the tooling to keep
+            them clean.
+          </p>
+          <p>
+            My background spans HPC scientific computing, HIPAA-regulated healthcare infrastructure,
+            and high-performance simulation engines. In every context the constraint is the same:
+            the system has to keep running, correctly, the whole time.
+          </p>
+          <p>
+            I work remotely and independently, bringing senior-level ownership to complex problems
+            without requiring a lot of hand-holding.
+          </p>
+        </div>
+        <div class="stat-list reveal">
+          <div class="stat-item">
+            <span class="stat-number">15+</span>
+            <span class="stat-label">Years production C</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">100+</span>
+            <span class="stat-label">Coverity vulnerabilities eliminated, zero behavioral change</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">1B</span>
+            <span class="stat-label">Monte Carlo iterations / 19 min on commodity hardware</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">7 yrs</span>
+            <span class="stat-label">Operational runtime, DRI particle dispersion model</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── Skills ── -->
+  <section id="skills">
+    <div class="section-inner">
+      <p class="section-label reveal">Skills</p>
+      <div class="skills-grid reveal">
+        <div class="skill-group">
+          <p class="skill-group-title">Core Languages</p>
+          <div class="skill-items">
+            <span class="skill-item skill-expert">C (15+ yrs production)</span>
+            <span class="skill-item skill-expert">C++ (systems / simulation)</span>
+            <span class="skill-item skill-expert">Bash / Shell scripting</span>
+            <span class="skill-item">Python (automation / scripting)</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <p class="skill-group-title">Systems &amp; Infrastructure</p>
+          <div class="skill-items">
+            <span class="skill-item skill-expert">Linux systems administration</span>
+            <span class="skill-item skill-expert">HPC / PBS / qsub scheduling</span>
+            <span class="skill-item">Oracle SQL / embedded SQL</span>
+            <span class="skill-item">Fault-tolerant pipeline design</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <p class="skill-group-title">Quality &amp; Security</p>
+          <div class="skill-items">
+            <span class="skill-item skill-expert">Coverity static analysis</span>
+            <span class="skill-item skill-expert">HIPAA-compliant systems</span>
+            <span class="skill-item">Behavior-preserving refactoring</span>
+            <span class="skill-item">Secure coding practices</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <p class="skill-group-title">Domains</p>
+          <div class="skill-items">
+            <span class="skill-item">Healthcare IT (Medicaid)</span>
+            <span class="skill-item">Scientific / atmospheric modeling</span>
+            <span class="skill-item">High-performance simulation</span>
+            <span class="skill-item">Edge computing</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-rule">
+
+  <!-- ── Projects ── -->
+  <section id="projects">
+    <div class="section-inner">
+      <p class="section-label reveal">Projects</p>
+
+      <div class="projects-list">
+
+        <!-- Project 1 -->
+        <div class="project-card reveal">
+          <p class="project-index">01</p>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="tag">C++</span>
+              <span class="tag">Monte Carlo</span>
+              <span class="tag">Performance</span>
+              <span class="tag">Regulatory</span>
+            </div>
+            <h3 class="project-title">C++ Monte Carlo Simulation Engine</h3>
+            <p class="project-desc">
+              Built a high-performance Monte Carlo simulation engine for gaming analytics
+              regulatory compliance. The engine executes one billion iterations in under
+              19 minutes on commodity hardware, with a clean CLI interface and full
+              documentation. Designed for auditability — regulators need to trust the math.
+            </p>
+            <p class="project-metric">→ 1,000,000,000 iterations · &lt;19 min runtime · commodity hardware</p>
+            <a class="project-link" href="https://github.com/TMAnimus/Monte_Carlo" target="_blank" rel="noopener">
+              View on GitHub
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card reveal">
+          <p class="project-index">02</p>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="tag">C</span>
+              <span class="tag">HPC</span>
+              <span class="tag">Fortran Migration</span>
+              <span class="tag">Scientific Computing</span>
+            </div>
+            <h3 class="project-title">Lagrangian Particle Dispersion Model</h3>
+            <p class="project-desc">
+              As sole architect at the Desert Research Institute, initiated and led a full
+              rewrite of an atmospheric Fortran 90 particle dispersion model into ANSI C.
+              The system ran operationally for seven-plus years, coordinated distributed
+              pipelines across multi-node HPC clusters, and supported U.S. Navy dust
+              impact assessments at Fallon NAS. The inverse-mode capability was cited in
+              peer-reviewed research.
+            </p>
+            <p class="project-metric">→ 7+ years operational · Multi-node HPC · Cited in JAWMA (2011) and DTIC ADA541808</p>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card reveal">
+          <p class="project-index">03</p>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="tag">C</span>
+              <span class="tag">HIPAA</span>
+              <span class="tag">Coverity</span>
+              <span class="tag">Healthcare IT</span>
+            </div>
+            <h3 class="project-title">HIPAA Codebase Security Remediation</h3>
+            <p class="project-desc">
+              At Gainwell Technologies, systematically eliminated over 100 Coverity-flagged
+              security vulnerabilities from a HIPAA-compliant Medicaid C codebase — with
+              zero behavioral changes to the running system and zero downtime. Simultaneously
+              integrated Coverity into the Git workflow so new vulnerabilities were caught
+              before they reached production.
+            </p>
+            <p class="project-metric">→ 100+ CVEs resolved · Zero regressions · Zero downtime · Coverity/Git integration</p>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="project-card reveal">
+          <p class="project-index">04</p>
+          <div class="project-body">
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">C</span>
+              <span class="tag">Edge Computing</span>
+              <span class="tag">Image Classification</span>
+            </div>
+            <h3 class="project-title">Automated Cloud Cover Observation System</h3>
+            <p class="project-desc">
+              Developed a Raspberry Pi edge computing proof-of-concept for solar energy
+              forecasting: a fisheye camera feeding a Python/C image classification pipeline
+              to automatically detect and quantify cloud cover in real time. Demonstrated
+              that on-device inference can replace manual observation at a fraction of the cost.
+            </p>
+            <p class="project-metric">→ Edge inference · Raspberry Pi · Solar energy domain</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Contact ── -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="contact-cta reveal">
+        <p class="section-label" style="margin-bottom:1.5rem">Contact</p>
+        <h2>Let's talk about<br><em>hard problems</em></h2>
+        <p>
+          Available for fully remote senior engineering roles — particularly in
+          healthcare IT, defense, scientific computing, and finance where C/C++
+          legacy systems need serious attention.
+        </p>
+        <a class="btn" href="mailto:TMAnimus@gmail.com">Send an Email</a>
+      </div>
+      <div class="contact-links reveal">
+        <a class="contact-link" href="mailto:TMAnimus@gmail.com">
+          <div class="contact-link-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </div>
+          <div class="contact-link-meta">
+            <p class="contact-link-label">Email</p>
+            <p class="contact-link-value">TMAnimus@gmail.com</p>
+          </div>
+        </a>
+        <a class="contact-link" href="https://linkedin.com/in/travis-mccord" target="_blank" rel="noopener">
+          <div class="contact-link-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </div>
+          <div class="contact-link-meta">
+            <p class="contact-link-label">LinkedIn</p>
+            <p class="contact-link-value">linkedin.com/in/travis-mccord</p>
+          </div>
+        </a>
+        <a class="contact-link" href="https://github.com/TMAnimus" target="_blank" rel="noopener">
+          <div class="contact-link-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+          </div>
+          <div class="contact-link-meta">
+            <p class="contact-link-label">GitHub</p>
+            <p class="contact-link-value">github.com/TMAnimus</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Travis McCord · Senior Systems Engineer</p>
+    <p>Built with HTML &amp; CSS · Hosted on GitHub Pages</p>
+  </footer>
+
+  <script>
+    // Sticky nav
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
+```
